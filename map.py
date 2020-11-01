@@ -12,10 +12,9 @@ from bokeh.models import Slider, HoverTool, Button
 from bokeh.layouts import widgetbox, row, column
 from covid_data import get_percentage_cases_by_month
 
-df = pd.read_csv (r'WHO-COVID-19-global-data.csv')
+df_who = pd.read_csv (r'WHO-COVID-19-global-data.csv')
 
-percent_cases = get_percentage_cases_by_month(df, 6)
-print(percent_cases)
+
 shapefile = 'mapfiles/ne_110m_admin_0_countries.shp'
 #Read shapefile using Geopandas
 gdf = gpd.read_file(shapefile)[['ADMIN', 'ADM0_A3', 'geometry']]
@@ -27,17 +26,17 @@ print(gdf[gdf['country'] == 'Antarctica'])
 #Drop row corresponding to 'Antarctica'
 gdf = gdf.drop(gdf.index[159])
 
-obesity_file = 'data/obesity.csv'
-
-#Read csv file using pandas
-df = pd.read_csv(obesity_file, names = ['entity', 'code', 'year', 'per_cent_obesity'], skiprows = 1)
-print(df.head())
-
-
-def json_data(selectedYear):
-    yr = selectedYear
-    df_yr = df[df['year'] == yr]
-    merged = gdf.merge(df_yr, left_on = 'country_code', right_on =     'code', how = 'left')
+df_month = get_percentage_cases_by_month(df_who, 6)
+print(df_month)
+merged = gdf.merge(df_month, left_on = 'country_code', right_on = " Country_code", how = 'left')
+print(merged)
+def json_data(selectedMonth):
+    m = selectedMonth
+    df_month = get_percentage_cases_by_month(df_who, selectedMonth)
+    print(df_month)
+    
+    merged = gdf.merge(df_month, left_on = 'country_code', right_on = " Country_code", how = 'left')
+    print(merged)
     merged.fillna('No data', inplace = True)
     merged_json = json.loads(merged.to_json())
     json_data = json.dumps(merged_json)
@@ -45,7 +44,7 @@ def json_data(selectedYear):
 
 
 #Input GeoJSON source that contains features for plotting.
-geosource = GeoJSONDataSource(geojson = json_data(2016))
+geosource = GeoJSONDataSource(geojson = json_data(1))
 #Define a sequential multi-hue color palette.
 palette = brewer['YlOrRd'][8]
 #Reverse color order so that dark blue is highest obesity.
@@ -70,7 +69,7 @@ p.patches('xs','ys', source = geosource,fill_color = {'field' :'per_cent_obesity
 p.add_layout(color_bar, 'below')
 
 # Define the callback function: update_plot
-year = 2016
+month = 1
 def update_plot(attr, old, new):
     yr = new
     new_data = json_data(yr)
@@ -78,15 +77,15 @@ def update_plot(attr, old, new):
     p.title.text = 'Share of adults who are obese, %d' %yr
     
 def thread_safe_update():
-    global year
-    if year == 1975:
-        year = 2016
-    yr = year
-    new_data = json_data(yr)
-    print(year)
+    global month
+    if month == 8:
+        month = 1
+    m = month
+    new_data = json_data(m)
+    print(m)
     geosource.geojson = new_data
-    p.title.text = 'Share of adults who are obese, %d' %yr
-    year = year - 1
+    p.title.text = 'Share of adults who are obese, %d' %m
+    month = month + 1
 
 def on_click_handler():
     curdoc().add_periodic_callback(thread_safe_update, 4000)

@@ -5,7 +5,7 @@ from miditime.miditime import MIDITime
 from geopy.geocoders import Nominatim
 geolocator = Nominatim(user_agent="my_Dashboard")
 import numpy as np
-
+import pycountry as pc
 def geolocate(country=None):
     '''
     Inputs city and country, or just country. Returns the lat/long coordinates of 
@@ -67,9 +67,15 @@ def get_percentage_cases_by_month(who_df, month_num):
     print(df_max_cases)
     print(df_cumulative_cases_by_month)
     merged = pd.merge(df_max_cases, df_cumulative_cases_by_month, left_index = True, right_on = " Country_code")
-    merged['percent_cases'] = merged[' Cumulative_cases'] / merged["max_cases"]
-    return merged
+    merged['per_cent_obesity'] = (merged[' Cumulative_cases'] / merged["max_cases"]) * 100
+    merged[' Country_code'] = merged[' Country_code'].apply(lambda x: convert_to_a3_codes(x))
+    return merged[[' Country_code', 'per_cent_obesity']]
 
+def convert_to_a3_codes(x):
+    country = pc.countries.get(alpha_2=x)
+    if country != None:
+        return country.alpha_3
+    return x
 
 get_percentage_cases_by_month(df, 6)
 
