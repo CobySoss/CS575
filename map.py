@@ -1,6 +1,8 @@
 import geopandas as gpd
 import pandas as pd
 import json
+import miditime
+from miditime.miditime import MIDITime
 from bokeh.io import output_notebook, show, output_file
 from bokeh.plotting import figure
 from bokeh.models import GeoJSONDataSource, LinearColorMapper, ColorBar
@@ -8,8 +10,12 @@ from bokeh.palettes import brewer
 from bokeh.io import curdoc, output_notebook
 from bokeh.models import Slider, HoverTool, Button
 from bokeh.layouts import widgetbox, row, column
-import threading
+from covid_data import get_percentage_cases_by_month
 
+df = pd.read_csv (r'WHO-COVID-19-global-data.csv')
+
+percent_cases = get_percentage_cases_by_month(df, 6)
+print(percent_cases)
 shapefile = 'mapfiles/ne_110m_admin_0_countries.shp'
 #Read shapefile using Geopandas
 gdf = gpd.read_file(shapefile)[['ADMIN', 'ADM0_A3', 'geometry']]
@@ -73,6 +79,8 @@ def update_plot(attr, old, new):
     
 def thread_safe_update():
     global year
+    if year == 1975:
+        year = 2016
     yr = year
     new_data = json_data(yr)
     print(year)
