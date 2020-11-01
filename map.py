@@ -6,7 +6,7 @@ from bokeh.plotting import figure
 from bokeh.models import GeoJSONDataSource, LinearColorMapper, ColorBar
 from bokeh.palettes import brewer
 from bokeh.io import curdoc, output_notebook
-from bokeh.models import Slider, HoverTool
+from bokeh.models import Slider, HoverTool, Button
 from bokeh.layouts import widgetbox, row, column
 import threading
 
@@ -41,7 +41,7 @@ def json_data(selectedYear):
 #Input GeoJSON source that contains features for plotting.
 geosource = GeoJSONDataSource(geojson = json_data(2016))
 #Define a sequential multi-hue color palette.
-palette = brewer['YlGnBu'][8]
+palette = brewer['YlOrRd'][8]
 #Reverse color order so that dark blue is highest obesity.
 palette = palette[::-1]
 #Instantiate LinearColorMapper that linearly maps numbers in a range, into a sequence of colors. Input nan_color.
@@ -80,16 +80,20 @@ def thread_safe_update():
     p.title.text = 'Share of adults who are obese, %d' %yr
     year = year - 1
 
- #Make a slider object: slider 
+def on_click_handler():
+    curdoc().add_periodic_callback(thread_safe_update, 4000)
+
+ #Make a slider object: slider
+button = Button(label = "The Button")
+button.on_click(on_click_handler)
 slider = Slider(title = 'Year',start = 1975, end = 2016, step = 1, value = 2016)
 slider.on_change('value', update_plot)
  #Make a column layout of widgetbox(slider) and plot, and add it to the current document
-layout = column(p,widgetbox(slider))
+layout = column(p,widgetbox(slider), widgetbox(button))
 curdoc().add_root(layout)
 #Display plot inline in Jupyter notebook
 #output_notebook()
 #Display plot
-  
-curdoc().add_periodic_callback(thread_safe_update, 4000)
-show(p)
-i = 0
+
+#show(p)
+#i = 0
