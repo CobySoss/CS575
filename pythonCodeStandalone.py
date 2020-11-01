@@ -1,5 +1,6 @@
 import miditime
 import pandas as pd
+import geopandas as geopd
 from miditime.miditime import MIDITime
 from geopy.geocoders import Nominatim
 geolocator = Nominatim(user_agent="my_Dashboard")
