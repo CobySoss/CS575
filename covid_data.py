@@ -32,10 +32,11 @@ def get_cumulative_cases_by_month(who_df, month_num):
 def get_percentage_cases_by_month(who_df, month_num):
     df_max_cases = get_max_cases_per_country(who_df)
     df_cumulative_cases_by_month = get_cumulative_cases_by_month(who_df, month_num)
+    total_global_cases = df_max_cases["max_cases"].sum(skipna = True) 
     print(df_max_cases)
     print(df_cumulative_cases_by_month)
     merged = pd.merge(df_max_cases, df_cumulative_cases_by_month, left_index = True, right_on = " Country_code")
-    merged['per_cent_covid'] = (merged[' Cumulative_cases'] / merged["max_cases"]) * 100
+    merged['per_cent_covid'] = (merged[' Cumulative_cases'] / total_global_cases) * 100
     merged[' Country_code'] = merged[' Country_code'].apply(lambda x: convert_to_a3_codes(x))
     return merged[[' Country_code', 'per_cent_covid']]
 

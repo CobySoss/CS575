@@ -53,9 +53,9 @@ palette = brewer['YlOrRd'][8]
 #Reverse color order so that dark blue is highest obesity.
 palette = palette[::-1]
 #Instantiate LinearColorMapper that linearly maps numbers in a range, into a sequence of colors. Input nan_color.
-color_mapper = LinearColorMapper(palette = palette, low = 0, high = 40, nan_color = '#d9d9d9')
+color_mapper = LinearColorMapper(palette = palette, low = 0, high = 10, nan_color = '#d9d9d9')
 #Define custom tick labels for color bar.
-tick_labels = {'0': '0%', '5': '5%', '10':'10%', '15':'15%', '20':'20%', '25':'25%', '30':'30%','35':'35%', '40': '>40%'}
+tick_labels = {'0': '0%', '5': '5%', '10':'>10%'}
 #Add hover tool
 hover = HoverTool(tooltips = [ ('Country/region','@country'),('% covid', '@per_cent_covid')])
 #Create color bar. 
