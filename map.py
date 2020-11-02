@@ -62,7 +62,7 @@ hover = HoverTool(tooltips = [ ('Country/region','@country'),('% covid', '@per_c
 color_bar = ColorBar(color_mapper=color_mapper, label_standoff=8,width = 500, height = 20,
                      border_line_color=None,location = (0,0), orientation = 'horizontal', major_label_overrides = tick_labels)
 #Create figure object.
-p = figure(title = 'Covid19 perentage of total Cases for January', plot_height = 600 , plot_width = 950, toolbar_location = None, tools = [hover])
+p = figure(title = 'Covid19 perentage of total cases for January', plot_height = 600 , plot_width = 950, toolbar_location = None, tools = [hover])
 p.xgrid.grid_line_color = None
 p.ygrid.grid_line_color = None
 #Add patch renderer to figure. 
@@ -85,7 +85,7 @@ def thread_safe_update():
     new_data = json_data(m)
     print(m)
     geosource.geojson = new_data
-    p.title.text = 'Covid19 perentage of total Cases for ' + month_str[m]
+    p.title.text = 'Covid19 perentage of total cases for ' + month_str[m]
     month = month + 1
     play_midi(filename)
 
