@@ -7,7 +7,7 @@ import pycountry as pc
 df = pd.read_csv (r'WHO-COVID-19-global-data.csv')
 location_data = pd.read_csv(r'lat_lon_for_covid.csv')
 
-
+#test comment here
 print (df)
 midi_df = df[['Date_reported',' Country_code',' Country',' New_cases', ' Cumulative_cases',' Cumulative_deaths']]
 midi_df_sorted = midi_df.sort_values(by=[' Country_code', 'Date_reported'])
