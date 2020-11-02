@@ -57,16 +57,16 @@ color_mapper = LinearColorMapper(palette = palette, low = 0, high = 40, nan_colo
 #Define custom tick labels for color bar.
 tick_labels = {'0': '0%', '5': '5%', '10':'10%', '15':'15%', '20':'20%', '25':'25%', '30':'30%','35':'35%', '40': '>40%'}
 #Add hover tool
-hover = HoverTool(tooltips = [ ('Country/region','@country'),('% obesity', '@per_cent_obesity')])
+hover = HoverTool(tooltips = [ ('Country/region','@country'),('% covid', '@per_cent_covid')])
 #Create color bar. 
 color_bar = ColorBar(color_mapper=color_mapper, label_standoff=8,width = 500, height = 20,
                      border_line_color=None,location = (0,0), orientation = 'horizontal', major_label_overrides = tick_labels)
 #Create figure object.
-p = figure(title = 'Share of adults who are obese, 2016', plot_height = 600 , plot_width = 950, toolbar_location = None, tools = [hover])
+p = figure(title = 'Covid19 perentage of total Cases for January', plot_height = 600 , plot_width = 950, toolbar_location = None, tools = [hover])
 p.xgrid.grid_line_color = None
 p.ygrid.grid_line_color = None
 #Add patch renderer to figure. 
-p.patches('xs','ys', source = geosource,fill_color = {'field' :'per_cent_obesity', 'transform' : color_mapper},
+p.patches('xs','ys', source = geosource,fill_color = {'field' :'per_cent_covid', 'transform' : color_mapper},
           line_color = 'black', line_width = 0.25, fill_alpha = 1)
 #Specify layout
 p.add_layout(color_bar, 'below')

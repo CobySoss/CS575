@@ -35,9 +35,9 @@ def get_percentage_cases_by_month(who_df, month_num):
     print(df_max_cases)
     print(df_cumulative_cases_by_month)
     merged = pd.merge(df_max_cases, df_cumulative_cases_by_month, left_index = True, right_on = " Country_code")
-    merged['per_cent_obesity'] = (merged[' Cumulative_cases'] / merged["max_cases"]) * 100
+    merged['per_cent_covid'] = (merged[' Cumulative_cases'] / merged["max_cases"]) * 100
     merged[' Country_code'] = merged[' Country_code'].apply(lambda x: convert_to_a3_codes(x))
-    return merged[[' Country_code', 'per_cent_obesity']]
+    return merged[[' Country_code', 'per_cent_covid']]
 
 def convert_to_a3_codes(x):
     country = pc.countries.get(alpha_2=x)
@@ -63,4 +63,4 @@ def get_monthly_increase_ratios_against_current_total(who_df):
         monthly_case_contributions.append(get_percentage_of_total_cases_for_month(who_df, i))
         i = i + 1
     return monthly_case_contributions
-    
+
