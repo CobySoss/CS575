@@ -1,40 +1,8 @@
-import miditime
 import pandas as pd
 import geopandas as geopd
-from miditime.miditime import MIDITime
-from geopy.geocoders import Nominatim
-geolocator = Nominatim(user_agent="my_Dashboard")
 import numpy as np
 import pycountry as pc
-def geolocate(country=None):
-    '''
-    Inputs city and country, or just country. Returns the lat/long coordinates of 
-    either the city if possible, if not, then returns lat/long of the center of the country.
-    '''
-    try:
-            # Geolocate the center of the country
-        loc = geolocator.geocode(country)
-            # And return latitude and longitude 
-        return (loc.latitude, loc.longitude)
-        # Otherwise
-    except:
-            # Return missing value
-        return np.nan
 
-# Instantiate the class with a tempo (120bpm is the default) and an output file destination.
-mymidi = MIDITime(120, 'myfile.mid')
-
-# Create a list of notes. Each note is a list: [time, pitch, velocity, duration]
-midinotes = [
-    [0, 60, 127, 3],  #At 0 beats (the start), Middle C with velocity 127, for 3 beats
-    [10, 61, 127, 4]  #At 10 beats (12 seconds from start), C#5 with velocity 127, for 4 beats
-]
-
-# Add a track with those notes
-mymidi.add_track(midinotes)
-
-# Output the .mid file
-mymidi.save_midi()
 
 df = pd.read_csv (r'WHO-COVID-19-global-data.csv')
 location_data = pd.read_csv(r'lat_lon_for_covid.csv')
@@ -51,7 +19,7 @@ def get_max_cases_per_country(who_df):
     return max_cases_by_country
 
 def get_cumulative_cases_by_month(who_df, month_num):
-    last_day = {1:31, 2:29, 3:31, 4:30, 5:31, 6:30, 7:31, 8:31, 9:30, 10:31}
+    last_day = {1:31, 2:29, 3:31, 4:30, 5:31, 6:30, 7:31, 8:31, 9:30, 10:30}
     day = last_day[month_num]
     date_str = "2020" + '-' + "{:02d}".format(month_num) + '-' + str(day)
     df_sorted = who_df.sort_values(by=[' Country_code', 'Date_reported'])
@@ -77,19 +45,22 @@ def convert_to_a3_codes(x):
         return country.alpha_3
     return x
 
-get_percentage_cases_by_month(df, 6)
+def get_percentage_of_total_cases_for_month(who_df, month):
+    max_cases_per_country = get_max_cases_per_country(who_df)   
+    total_global_cases = max_cases_per_country["max_cases"].sum(skipna = True) 
+    cumulative_cases_for_month = get_cumulative_cases_by_month(who_df, month)
+    new_monthly_cases =  cumulative_cases_for_month[" Cumulative_cases"].sum(skipna = True)
+    if month > 1:
+        cumulative_cases_for_prev_month = get_cumulative_cases_by_month(who_df, month - 1)
+        last_month_cases =  cumulative_cases_for_prev_month[" Cumulative_cases"].sum(skipna = True)
+        new_monthly_cases = new_monthly_cases - last_month_cases
+    return new_monthly_cases / total_global_cases
 
-
-#get_percentage_cases_by_month(df)
-country = midi_df_sorted[' Country'].unique()
-country_df = pd.DataFrame({' Country': country})
-#country_df['location'] = country_df[' Country'].apply(geolocate)
-print(country_df)
-print(location_data)
-final_table = pd.merge(midi_df_sorted, location_data)
-#country_df.to_csv('lat_lon_for_covid.csv')
-print(final_table)
-
-
-#difference = dataFrame.diff(axis=0)
-
+def get_monthly_increase_ratios_against_current_total(who_df):
+    monthly_case_contributions = []
+    i = 1
+    while(i < 11):
+        monthly_case_contributions.append(get_percentage_of_total_cases_for_month(who_df, i))
+        i = i + 1
+    return monthly_case_contributions
+    

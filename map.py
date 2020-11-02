@@ -10,10 +10,13 @@ from bokeh.palettes import brewer
 from bokeh.io import curdoc, output_notebook
 from bokeh.models import Slider, HoverTool, Button
 from bokeh.layouts import widgetbox, row, column
-from covid_data import get_percentage_cases_by_month
+from covid_data import get_percentage_cases_by_month, get_monthly_increase_ratios_against_current_total
+from sound import build_midi, play_midi, get_midi_scalars
 
+month_str = {1:"January", 2:"February", 3:"March", 4:"April", 5:"May", 6:"June", 7:"July", 8:"August", 9:"September", 10:"October"}
 df_who = pd.read_csv (r'WHO-COVID-19-global-data.csv')
-
+monthly_increase_scalars = get_monthly_increase_ratios_against_current_total(df_who)
+midi_scalars = get_midi_scalars(monthly_increase_scalars)
 
 shapefile = 'mapfiles/ne_110m_admin_0_countries.shp'
 #Read shapefile using Geopandas
@@ -69,38 +72,32 @@ p.patches('xs','ys', source = geosource,fill_color = {'field' :'per_cent_obesity
 p.add_layout(color_bar, 'below')
 
 # Define the callback function: update_plot
-month = 1
-def update_plot(attr, old, new):
-    yr = new
-    new_data = json_data(yr)
-    geosource.geojson = new_data
-    p.title.text = 'Share of adults who are obese, %d' %yr
-    
+month = 1 
+
 def thread_safe_update():
+    month_str = {1:"January", 2:"February", 3:"March", 4:"April", 5:"May", 6:"June", 7:"July", 8:"August", 9:"September", 10:"October"}
     global month
-    if month == 8:
+    if month == 11:
         month = 1
     m = month
+    filename = str(month) + ".midi"
+    build_midi(filename, month, midi_scalars[month-1])
     new_data = json_data(m)
     print(m)
     geosource.geojson = new_data
-    p.title.text = 'Share of adults who are obese, %d' %m
+    p.title.text = 'Covid19 perentage of total Cases for ' + month_str[m]
     month = month + 1
+    play_midi(filename)
 
 def on_click_handler():
     curdoc().add_periodic_callback(thread_safe_update, 4000)
 
  #Make a slider object: slider
-button = Button(label = "The Button")
+button = Button(label = "Start")
 button.on_click(on_click_handler)
-slider = Slider(title = 'Year',start = 1975, end = 2016, step = 1, value = 2016)
-slider.on_change('value', update_plot)
- #Make a column layout of widgetbox(slider) and plot, and add it to the current document
-layout = column(p,widgetbox(slider), widgetbox(button))
+layout = column(p,widgetbox(button))
 curdoc().add_root(layout)
 #Display plot inline in Jupyter notebook
 #output_notebook()
 #Display plot
-
 #show(p)
-#i = 0
