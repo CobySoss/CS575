@@ -90,7 +90,7 @@ def thread_safe_update():
     play_midi(filename)
 
 def on_click_handler():
-    curdoc().add_periodic_callback(thread_safe_update, 4000)
+    curdoc().add_periodic_callback(thread_safe_update, 250)
 
 button = Button(label = "Start")
 button.on_click(on_click_handler)

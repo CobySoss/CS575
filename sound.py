@@ -1,5 +1,6 @@
 from miditime.miditime import MIDITime
 import pygame as pg
+import pygame.midi
 import math
 
 def get_midi_scalars(month_scalars):
@@ -25,7 +26,7 @@ def build_midi(filename, month, midi_scalar):
         # scale_pct = mymidi.log_scale_pct(3, 5.7, magnitude, True)
 
         # Pick a range of notes. This allows you to play in a key.
-        c_major = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
+        c_major = ['C', 'D', 'E', 'Gb', 'Ab', 'B']
 
         #Find the note that matches your data point
         note = mymidi.scale_to_note(scale_pct, c_major)
@@ -48,6 +49,12 @@ def build_midi(filename, month, midi_scalar):
 
 def play_midi(filename):
     try:
+        #pg.midi.init()
+        #midiOutput = pg.midi.Output(1)
+        #midiOutput.set_instrument(12)
+      #  midiOutput.note_on(65, 177, 1)
+        #for x in range( 0, pg.midi.get_count() ):
+        #    print(x,"=",pg.midi.get_device_info(x))
         pg.mixer.init()
         pg.mixer.music.load(filename)
     except pg.error:
@@ -55,3 +62,5 @@ def play_midi(filename):
     pg.mixer.music.play()
 
 
+#build_midi("1.midi", 1, .6)
+#play_midi("1.midi")
