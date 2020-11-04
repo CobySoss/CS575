@@ -12,6 +12,7 @@ def get_midi_scalars(month_scalars):
         i = i + 1
     return midi_scalars
 
+#benign comment for git test
 def build_midi(filename, month, midi_scalar):
     # Instantiate the class with a tempo (120bpm is the default) and an output file destination.
     mymidi = MIDITime(120, filename)
