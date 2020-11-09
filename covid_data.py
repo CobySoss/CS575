@@ -12,8 +12,19 @@ print (df)
 midi_df = df[['Date_reported',' Country_code',' Country',' New_cases', ' Cumulative_cases',' Cumulative_deaths']]
 midi_df_sorted = midi_df.sort_values(by=[' Country_code', 'Date_reported'])
 
-def get_max_new_daily_cases(who_df):
-    return 0
+def get_max_new_daily_cases_for_regions(who_df):
+    new_daily_cases_per_region = get_new_daily_cases_by_region(who_df)
+    max_new_daily_cases_for_regions = new_daily_cases_per_region.agg(max_daily_new_regional_cases = pd.NamedAgg(column="total_new_daily_cases", aggfunc = max))
+    print(new_daily_cases_per_region)
+    return max_new_daily_cases_for_regions.loc['max_daily_new_regional_cases', 'total_new_daily_cases']
+
+
+def get_new_daily_cases_by_region(who_df):
+    df = who_df[['Date_reported',' WHO_region',' Country_code',' Country',' New_cases']]
+    df_sorted = df.sort_values(by=['Date_reported'])
+    print(df_sorted)
+    new_daily_cases_per_region = df_sorted.groupby(['Date_reported', ' WHO_region']).agg(total_new_daily_cases = pd.NamedAgg(column=" New_cases", aggfunc = sum))
+
 
 def get_max_cases_per_country(who_df):
     df = who_df[['Date_reported',' Country_code',' Country',' New_cases', ' Cumulative_cases',' Cumulative_deaths']]
@@ -68,3 +79,4 @@ def get_monthly_increase_ratios_against_current_total(who_df):
         i = i + 1
     return monthly_case_contributions
 
+#print(get_max_new_daily_cases_for_regions(df))
