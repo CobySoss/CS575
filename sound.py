@@ -1,4 +1,6 @@
 from miditime.miditime import MIDITime
+from midiutil.MidiFile3 import MIDIFile
+import miditime
 import pygame as pg
 import pygame.midi
 import math
@@ -45,16 +47,19 @@ def build_midi(filename, month, midi_scalar):
     # Output the .mid file
     mymidi.save_midi()
 
+def build_midi_test(filename):
+    # Instantiate the class with a tempo (120bpm is the default) and an output file destination.
+    mymidi = MIDITime(120, filename)
+    f = MIDIFile(1)
+    f.addTempo(0, 0, 120)
+    f.addProgramChange(0,0,0, 83)
+    f.addNote(0, 0, 61, 3, 1, 127)
+    with open("1.midi", 'wb') as outf:
+        f.writeFile(outf)
 
 
 def play_midi(filename):
     try:
-        #pg.midi.init()
-        #midiOutput = pg.midi.Output(1)
-        #midiOutput.set_instrument(12)
-      #  midiOutput.note_on(65, 177, 1)
-        #for x in range( 0, pg.midi.get_count() ):
-        #    print(x,"=",pg.midi.get_device_info(x))
         pg.mixer.init()
         pg.mixer.music.load(filename)
     except pg.error:
@@ -62,5 +67,6 @@ def play_midi(filename):
     pg.mixer.music.play()
 
 
-#build_midi("1.midi", 1, .6)
-#play_midi("1.midi")
+build_midi_test("1.midi")
+play_midi("1.midi")
+i = 0

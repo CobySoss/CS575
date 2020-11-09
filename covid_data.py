@@ -12,6 +12,9 @@ print (df)
 midi_df = df[['Date_reported',' Country_code',' Country',' New_cases', ' Cumulative_cases',' Cumulative_deaths']]
 midi_df_sorted = midi_df.sort_values(by=[' Country_code', 'Date_reported'])
 
+def get_max_new_daily_cases(who_df):
+    return 0
+
 def get_max_cases_per_country(who_df):
     df = who_df[['Date_reported',' Country_code',' Country',' New_cases', ' Cumulative_cases',' Cumulative_deaths']]
     df_sorted = df.sort_values(by=[' Country_code', 'Date_reported'])
