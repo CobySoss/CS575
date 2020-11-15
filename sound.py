@@ -1,5 +1,6 @@
 from miditime.miditime import MIDITime
 from midiutil.MidiFile3 import MIDIFile
+from covid_data import get_midi_notes
 import miditime
 import pygame as pg
 import pygame.midi
@@ -14,7 +15,6 @@ def get_midi_scalars(month_scalars):
         i = i + 1
     return midi_scalars
 
-#benign comment for git test
 def build_midi(filename, month, midi_scalar):
     # Instantiate the class with a tempo (120bpm is the default) and an output file destination.
     mymidi = MIDITime(120, filename)
@@ -48,13 +48,15 @@ def build_midi(filename, month, midi_scalar):
     # Output the .mid file
     mymidi.save_midi()
 
-def build_midi_test(filename):
+def build_midi_test(filename, midi_notes):
     # Instantiate the class with a tempo (120bpm is the default) and an output file destination.
-    mymidi = MIDITime(120, filename)
     f = MIDIFile(1)
-    f.addTempo(0, 0, 120)
+    f.addTempo(0, 0, 360)
     f.addProgramChange(0,0,0, 83)
-    f.addNote(0, 0, 61, 3, 1, 127)
+    i = 0
+    while i < len(midi_notes):
+        f.addNote(0, midi_notes[i][2], midi_notes[i][1], midi_notes[i][0], midi_notes[i][4], midi_notes[i][3])
+        i = i + 1
     with open("1.midi", 'wb') as outf:
         f.writeFile(outf)
 
@@ -68,6 +70,6 @@ def play_midi(filename):
     pg.mixer.music.play()
 
 
-build_midi_test("1.midi")
+build_midi_test("1.midi", get_midi_notes())
 play_midi("1.midi")
 i = 0
