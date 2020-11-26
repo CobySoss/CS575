@@ -27,7 +27,7 @@ def build_midi(filename, month, midi_scalar):
         # scale_pct = mymidi.log_scale_pct(3, 5.7, magnitude, True)
 
         # Pick a range of notes. This allows you to play in a key.
-        c_major = ['C', 'D', 'E', 'Gb', 'Ab', 'B']
+        c_wholeTone = ['C', 'D', 'E', 'Gb', 'Ab', 'B']
 
         #Find the note that matches your data point
         note = mymidi.scale_to_note(scale_pct, c_major)
