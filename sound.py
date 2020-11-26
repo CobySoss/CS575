@@ -32,7 +32,7 @@ def build_midi(filename, month, midi_scalar):
         c_wholeTone = ['C', 'D', 'E', 'Gb', 'Ab', 'B']
 
         #Find the note that matches your data point
-        note = mymidi.scale_to_note(scale_pct, c_major)
+        note = mymidi.scale_to_note(scale_pct, c_wholeTone)
 
         #Translate that note to a MIDI pitch
         midi_pitch = mymidi.note_to_midi_pitch(note)
