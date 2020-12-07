@@ -73,24 +73,28 @@ p.add_layout(color_bar, 'below')
 
 # Define the callback function: update_plot
 month = 1 
+periodic_callback_obj = None
 
 def thread_safe_update():
     month_str = {1:"January", 2:"February", 3:"March", 4:"April", 5:"May", 6:"June", 7:"July", 8:"August", 9:"September", 10:"October"}
     global month
     if month == 11:
         month = 1
-    m = month
-    filename = str(month) + ".midi"
-    build_midi(filename, month, midi_scalars[month-1])
-    new_data = json_data(m)
-    print(m)
-    geosource.geojson = new_data
-    p.title.text = 'Covid19 perentage of total cases for ' + month_str[m]
-    month = month + 1
-    play_midi(filename)
+        curdoc().remove_periodic_callback(periodic_callback_obj)
+    else:
+        m = month
+        filename = str(month) + ".midi"
+        build_midi(filename, month, midi_scalars[month-1])
+        new_data = json_data(m)
+        print(m)
+        geosource.geojson = new_data
+        p.title.text = 'Covid19 perentage of total cases for ' + month_str[m]
+        month = month + 1
+        play_midi(filename)
 
 def on_click_handler():
-    curdoc().add_periodic_callback(thread_safe_update, 1000)
+    global periodic_callback_obj
+    periodic_callback_obj = curdoc().add_periodic_callback(thread_safe_update, 1000)
 
 button = Button(label = "Start")
 button.on_click(on_click_handler)

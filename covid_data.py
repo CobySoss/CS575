@@ -38,18 +38,18 @@ def get_cumulative_cases_by_month(who_df, month_num):
     day = last_day[month_num]
     date_str = "2020" + '-' + "{:02d}".format(month_num) + '-' + str(day)
     df_sorted = who_df.sort_values(by=[' Country_code', 'Date_reported'])
-    print(df_sorted)
+    #print(df_sorted)
     is_monthly_cumulative = df_sorted['Date_reported'] == date_str
     df_sorted_filtered = df_sorted[is_monthly_cumulative]
-    print(df_sorted_filtered)
+    #print(df_sorted_filtered)
     return df_sorted_filtered[['Date_reported', ' Country_code', ' Cumulative_cases']]
 
 def get_percentage_cases_by_month(who_df, month_num):
     df_max_cases = get_max_cases_per_country(who_df)
     df_cumulative_cases_by_month = get_cumulative_cases_by_month(who_df, month_num)
     total_global_cases = df_max_cases["max_cases"].sum(skipna = True) 
-    print(df_max_cases)
-    print(df_cumulative_cases_by_month)
+    #print(df_max_cases)
+    #print(df_cumulative_cases_by_month)
     merged = pd.merge(df_max_cases, df_cumulative_cases_by_month, left_index = True, right_on = " Country_code")
     merged['per_cent_covid'] = (merged[' Cumulative_cases'] / total_global_cases) * 100
     merged[' Country_code'] = merged[' Country_code'].apply(lambda x: convert_to_a3_codes(x))
@@ -112,7 +112,7 @@ def region_to_channel(region_name):
 
 def get_midi_notes():
     newdf = get_daily_velocity_coefficients_by_region(df)
-    print(newdf)
+    #print(newdf)
     midi_notes = []
     for date_and_region, velocity_coeff in newdf.iterrows():
         date = date_and_region[0]
