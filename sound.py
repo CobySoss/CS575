@@ -70,6 +70,6 @@ def play_midi(filename):
     pg.mixer.music.play()
 
 
-build_midi_test("1.midi", get_midi_notes())
-play_midi("1.midi")
-i = 0
+#build_midi_test("1.midi", get_midi_notes())
+#play_midi("1.midi")
+#i = 0
